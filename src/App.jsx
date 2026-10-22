@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react";
 import { LIVROS_INICIAIS } from "./data/livros";
+import Header from "./components/Header.jsx";
 import ListaLivros from "./components/ListaLivros";
 import FormLivro from "./components/FormLivro";
 import Filtros from "./components/Filtros";
 import EstadoCarregamento from "./components/EstadoCarregamento";
-
-function Header() {
-  return (
-    <header className="header">
-      <h1>📚 Minha Estante de Livros</h1>
-      <p>React — JSX, componentes, props, Virtual DOM, listas/keys e renderização condicional</p>
-    </header>
-  );
-}
 
 function gerarId(lista) {
   return lista.length ? Math.max(...lista.map((l) => l.id)) + 1 : 1;
