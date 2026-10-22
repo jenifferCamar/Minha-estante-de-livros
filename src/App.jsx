@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { LIVROS_INICIAIS } from "./data/livros";
 import ListaLivros from "./components/ListaLivros";
 import FormLivro from "./components/FormLivro";
+import Filtros from "./components/Filtros";
 import EstadoCarregamento from "./components/EstadoCarregamento";
 
 function Header() {
@@ -21,6 +22,7 @@ function App() {
   const [livros, setLivros] = useState(LIVROS_INICIAIS);
   const [carregando, setCarregando] = useState(true);
   const [editando, setEditando] = useState(null);
+  const [filtro, setFiltro] = useState("todos");
 
   useEffect(() => {
     const timer = setTimeout(() => setCarregando(false), 800);
@@ -49,6 +51,18 @@ function App() {
   const iniciarEdicao = (id) => setEditando(livros.find((l) => l.id === id));
   const cancelarEdicao = () => setEditando(null);
 
+  const contagem = {
+    todos: livros.length,
+    lendo: livros.filter((l) => !l.concluido).length,
+    concluidos: livros.filter((l) => l.concluido).length,
+  };
+  const livrosFiltrados =
+    filtro === "todos"
+      ? livros
+      : livros.filter((l) =>
+          filtro === "concluidos" ? l.concluido : !l.concluido
+        );
+
   return (
     <>
       <Header />
@@ -60,12 +74,13 @@ function App() {
         />
         <section className="estante">
           <h2>Seus livros</h2>
+          <Filtros filtro={filtro} onFiltrar={setFiltro} contagem={contagem} />
           {carregando ? (
             <EstadoCarregamento />
           ) : (
             <ListaLivros
-              livros={livros}
-              filtro="todos"
+              livros={livrosFiltrados}
+              filtro={filtro}
               onAlternarStatus={alternarStatus}
               onEditar={iniciarEdicao}
               onExcluir={excluirLivro}
