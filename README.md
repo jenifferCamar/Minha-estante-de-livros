@@ -27,20 +27,9 @@ npm run dev
 
 Acesse http://localhost:5173.
 
-## Configuração da API
+## Dados
 
-A URL da API é definida por `VITE_API_URL`. Copie o exemplo e ajuste:
-
-```bash
-cp .env.example .env
-```
-
-Por padrão, o front-end consome a API CRUD de notas no `atividade-crud-api.onrender.com`. Para apontar para uma API local:
-
-```bash
-set VITE_API_URL=http://localhost:3000
-npm run dev
-```
+A aplicação parte de uma lista local de livros em `src/data/livros.js` (`LIVROS_INICIAIS`), por isso funciona sem backend. Para evoluir para dados persistidos, substitua a lista inicial por uma chamada `fetch` a uma API — por exemplo, a CRUD de notas em `atividade-crud-api` — usando `VITE_API_URL`.
 
 ## Build de produção
 
@@ -53,7 +42,7 @@ npm run preview
 
 A publicação é feita na **Vercel** com zero configuração: ao importar o repositório (`jenifferCamar/Minha-estante-de-livros`), a Vercel detecta o Vite, roda `npm install` + `npm run build` e publica automaticamente em cada push de `main`.
 
-> ⚠️ O front-end depende da API no Render (`atividade-crud-api`). Até que o deploy da API esteja ativo, a estante carrega, mas não consegue listar, criar ou atualizar notas.
+> ℹ️ A aplicação usa dados locais e não depende do deploy da API para funcionar.
 
 ## Scripts
 
@@ -71,13 +60,13 @@ Minha-estante-de-livros/
 ├── public/
 │   └── favicon.svg
 ├── src/
-│   ├── assets/
 │   ├── components/
 │   │   ├── CardLivro.jsx
 │   │   ├── EstadoCarregamento.jsx
 │   │   ├── EstadoVazio.jsx
 │   │   ├── Filtros.jsx
 │   │   ├── FormLivro.jsx
+│   │   ├── Header.jsx
 │   │   └── ListaLivros.jsx
 │   ├── data/
 │   │   └── livros.js
@@ -85,7 +74,6 @@ Minha-estante-de-livros/
 │   ├── App.jsx
 │   ├── index.css
 │   └── main.jsx
-├── .env.example
 ├── .gitignore
 ├── index.html
 ├── package.json
