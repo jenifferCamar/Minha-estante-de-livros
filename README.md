@@ -51,7 +51,7 @@ npm run preview
 
 ## Deploy
 
-A publicação é feita na **Vercel** com zero configuração: ao importar o repositório (`jenifferCamar/minha-estante-de-livros`), a Vercel detecta o Vite, roda `npm install` + `npm run build` e publica automaticamente em cada push de `main`.
+A publicação é feita na **Vercel** com zero configuração: ao importar o repositório (`jenifferCamar/Minha-estante-de-livros`), a Vercel detecta o Vite, roda `npm install` + `npm run build` e publica automaticamente em cada push de `main`.
 
 > ⚠️ O front-end depende da API no Render (`atividade-crud-api`). Até que o deploy da API esteja ativo, a estante carrega, mas não consegue listar, criar ou atualizar notas.
 
@@ -67,7 +67,7 @@ A publicação é feita na **Vercel** com zero configuração: ao importar o rep
 ## Estrutura
 
 ```text
-minha-estante-de-livros/
+Minha-estante-de-livros/
 ├── public/
 │   └── favicon.svg
 ├── src/
