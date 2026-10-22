@@ -60,6 +60,7 @@ function App() {
       <Header />
       <main className="conteudo">
         <FormLivro
+          key={editando ? editando.id : "novo"}
           onSalvar={editando ? salvarEdicao : adicionarLivro}
           livroEditando={editando}
           onCancelarEdicao={cancelarEdicao}

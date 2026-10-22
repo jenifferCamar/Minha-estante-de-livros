@@ -1,19 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function FormLivro({ onSalvar, livroEditando, onCancelarEdicao }) {
-  const [titulo, setTitulo] = useState("");
-  const [autor, setAutor] = useState("");
-  const [genero, setGenero] = useState("");
-
   const editando = Boolean(livroEditando);
 
-  useEffect(() => {
-    if (livroEditando) {
-      setTitulo(livroEditando.titulo ?? "");
-      setAutor(livroEditando.autor ?? "");
-      setGenero(livroEditando.genero ?? "");
-    }
-  }, [livroEditando]);
+  const [titulo, setTitulo] = useState(livroEditando?.titulo ?? "");
+  const [autor, setAutor] = useState(livroEditando?.autor ?? "");
+  const [genero, setGenero] = useState(livroEditando?.genero ?? "");
 
   const resetar = () => {
     setTitulo("");
