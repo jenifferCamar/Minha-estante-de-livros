@@ -25,50 +25,54 @@ Aplicação web desenvolvida com **React** e **Vite** para gerenciar uma estante
 
 ## 📖 Descrição
 
-A **Minha Estante de Livros** é um gerenciador de leituras intuitivo e responsivo. Ela permite que os leitores organizem suas obras favoritas, controlem o progresso entre obras em andamento e lidas, além de adicionar novos títulos ou editar informações existentes, tudo em uma interface limpa com tema acolhedor inspirado em leitura.
+A **Minha Estante de Livros** é um gerenciador de leituras intuitivo, moderno e responsivo. Permite que os leitores organizem suas obras favoritas, controlem o progresso entre obras em andamento e lidas, busquem por títulos em tempo real, adicionem novos títulos ou editem informações existentes, tudo persistido automaticamente no navegador via `localStorage`.
 
 ---
 
 ## ✨ Funcionalidades
 
 - **Listagem de livros**: visualização em cards com título, autor, gênero e badge de status.
+- **Busca em tempo real**: campo de pesquisa instantânea por título, autor ou gênero literário com botão para limpar busca.
 - **Cadastro de novos livros**: formulário com validação de campos obrigatórios.
 - **Edição em tempo real**: alteração de título, autor e gênero de qualquer livro já cadastrado, reaproveitando o mesmo componente de formulário.
-- **Alternância de status**: botão rápido para marcar como lido ("✓ Marcar como lido") ou reabrir leitura ("↺ Marcar como lendo").
-- **Exclusão de livros**: remoção simplificada de títulos da estante.
-- **Filtro dinâmico por status**: botões com contadores atualizados em tempo real para:
-  - *Todos* (quantidade total)
-  - *Lendo* (em andamento)
-  - *Concluídos* (finalizados)
-- **Feedback de carregamento**: animação de *loading* com SVG simulando a sincronização inicial.
-- **Estado vazio amigável**: mensagens contextuais caso a lista geral ou um filtro específico não contenha livros cadastrados.
+- **Alternância de status**: botão de alternância rápida entre concluído ("✓ Marcar como lido") e em andamento ("↺ Marcar como lendo").
+- **Exclusão de livros**: remoção imediata de títulos da estante.
+- **Filtro dinâmico por status**: botões com contadores atualizados em tempo real:
+  - *Todos* (total de livros)
+  - *Lendo* (obras em andamento)
+  - *Concluídos* (obras finalizadas)
+- **Persistência local (`localStorage`)**: os dados inseridos, editados ou excluídos permanecem salvos mesmo após recarregar ou fechar a página.
+- **Feedback de carregamento**: animação suave com SVG simulando a sincronização inicial.
+- **Estado vazio amigável**: mensagens contextuais caso a lista geral esteja vazia, um filtro não contenha livros ou uma busca não retorne resultados.
 
 ---
 
 ## 🧠 Conceitos do React Aplicados
 
 ### 1. JSX (JavaScript XML)
-O JSX permite escrever estruturas semelhantes a HTML diretamente no código JavaScript, combinando lógica e interface de forma declarativa:
-- Expressões e valores dinâmicos são interpolados utilizando chaves `{}`.
-- Atributos dinâmicos como `className={`card-livro ${statusClasse}`}` e eventos como `onClick={() => onAlternarStatus(livro.id)}`.
+O JSX permite escrever estruturas declarativas mesclando HTML e JavaScript:
+- Interpolação de variáveis e expressões dinâmicas com chaves `{}`.
+- Composição de classes CSS dinâmicas baseadas no status: `className={`card-livro ${statusClasse}`}`.
+- Manipuladores de eventos inline: `onClick={() => onAlternarStatus(livro.id)}` e `onChange={(e) => setBusca(e.target.value)}`.
 
 ### 2. Componentes
-A aplicação foi modularizada em componentes funcionais e reutilizáveis, cada um com sua responsabilidade bem definida:
-- `Header.jsx`: Cabeçalho informativo da aplicação.
+A aplicação foi dividida em componentes funcionais e modulares, seguindo o princípio da responsabilidade única:
+- `Header.jsx`: Cabeçalho informativo e temático da aplicação.
+- `BarraBusca.jsx`: Componente controlado para filtragem textual em tempo real.
 - `FormLivro.jsx`: Formulário controlado para criação e edição de livros.
-- `Filtros.jsx`: Barra de navegação com filtros e contadores.
-- `ListaLivros.jsx`: Container responsável por iterar sobre os livros.
-- `CardLivro.jsx`: Card de apresentação individual com botões de ação.
-- `EstadoCarregamento.jsx`: Indicador visual de carregamento.
-- `EstadoVazio.jsx`: Mensagem amigável quando nenhum livro é encontrado.
+- `Filtros.jsx`: Barra de navegação com filtros por status e badges de contagem.
+- `ListaLivros.jsx`: Container responsável por iterar sobre os livros e renderizar a coleção.
+- `CardLivro.jsx`: Card individual de cada livro com botões de ação (status, editar, excluir).
+- `EstadoCarregamento.jsx`: Indicador visual de loading com SVG animado.
+- `EstadoVazio.jsx`: Feedback visual e mensagens orientativas quando a lista não tem itens.
 
 ### 3. Props (Propriedades)
-O fluxo de dados no React é unidirecional (*top-down*). As propriedades foram usadas para:
-- Passar dados dos componentes pais para os filhos (ex.: `livro` passado de `ListaLivros` para `CardLivro`).
-- Passar funções de *callback* (ex.: `onAlternarStatus`, `onEditar`, `onExcluir`, `onSalvar`) permitindo que componentes filhos comuniquem eventos de volta aos seus pais.
+O fluxo de dados no React é estritamente unidirecional (*top-down*). As propriedades foram usadas para:
+- Passar dados dos componentes pais para os filhos (ex.: `livro`, `filtro`, `contagem`, `termo`).
+- Passar funções de *callback* (ex.: `onSalvar`, `onAlternarStatus`, `onEditar`, `onExcluir`, `onBuscar`, `onLimpar`), permitindo a comunicação filho ➔ pai para atualização do estado.
 
 ```jsx
-// Exemplo em ListaLivros.jsx passando props para CardLivro
+// Exemplo em ListaLivros.jsx repassando dados e callbacks para CardLivro
 <CardLivro
   livro={livro}
   onAlternarStatus={onAlternarStatus}
@@ -78,15 +82,15 @@ O fluxo de dados no React é unidirecional (*top-down*). As propriedades foram u
 ```
 
 ### 4. Virtual DOM e Reconciliação
-O React mantém uma representação leve da interface em memória chamada **Virtual DOM**:
-- Sempre que o estado (`useState`) de `livros`, `filtro` ou `editando` é alterado, o React gera uma nova árvore do Virtual DOM.
-- Por meio do algoritmo de reconciliação (*diffing algorithm*), o React compara a nova árvore com a anterior e calcula o menor número de operações necessárias.
-- Apenas os elementos HTML que de fato mudaram são atualizados no DOM real (por exemplo, apenas o badge e o título do card cujo status foi alterado, sem re-renderizar a página inteira), proporcionando máxima performance e fluidez.
+O React gerencia uma cópia virtual do DOM na memória:
+- Ao interagir com a aplicação (ex.: marcar um livro como lido ou digitar no campo de busca), o estado do componente raiz é modificado via `useState`.
+- O React recalcula o Virtual DOM e, através do **algoritmo de reconciliação** (*diffing*), determina exatamente as menores alterações necessárias.
+- Apenas os nós HTML alterados são atualizados no DOM real (como a classe do card e o texto do badge), sem re-renderizar nem redesenhar a página inteira.
 
 ### 5. Listas e Prop `key`
-A renderização de coleções é realizada através do método `.map()` do JavaScript:
-- É obrigatório fornecer uma prop `key` única para cada item (neste projeto, `key={livro.id}`).
-- O `key` é essencial para o Virtual DOM identificar de forma eficiente quais itens foram adicionados, removidos ou reordenados entre as renderizações.
+A renderização de coleções dinâmicas é realizada com o método `.map()` do JavaScript:
+- Cada elemento gerado recebe uma prop `key` estável e única (`key={livro.id}` ou `key={opcao.valor}`).
+- As chaves permitem ao algoritmo de reconciliação do Virtual DOM identificar exatamente quais itens foram criados, excluídos ou alterados na ordem da lista.
 
 ```jsx
 // Exemplo em ListaLivros.jsx
@@ -100,15 +104,16 @@ A renderização de coleções é realizada através do método `.map()` do Java
 ```
 
 ### 6. Renderização Condicional
-Diferentes abordagens de renderização condicional foram implementadas no projeto:
+Diversos padrões de renderização condicional foram integrados:
 - **Operador Ternário (`condicao ? a : b`)**:
   - Exibição de carregamento vs. lista: `{carregando ? <EstadoCarregamento /> : <ListaLivros ... />}`
-  - Rótulos e textos: `{concluido ? "Concluído" : "Para ler"}` e `{editando ? "Salvar alterações" : "Adicionar à estante"}`.
+  - Modos de texto e botão: `{editando ? "Salvar alterações" : "Adicionar à estante"}` e `{concluido ? "Concluído" : "Para ler"}`.
 - **Operador Lógico `&&` (Short-circuit)**:
-  - Exibição condicional de campos opcionais: `{autor && <p className="card-livro__autor">por {autor}</p>}`
-  - Botão de cancelamento visível apenas durante edição: `{editando && onCancelarEdicao && <button ...>Cancelar</button>}`.
+  - Exibição de atributos opcionais: `{autor && <p className="card-livro__autor">por {autor}</p>}`
+  - Botão de limpar busca: `{termo && <button className="barra-busca__limpar" ...>✕</button>}`
+  - Botão de cancelamento: `{editando && onCancelarEdicao && <button ...>Cancelar</button>}`.
 - **Retorno Antecipado (*Early Return*)**:
-  - Em `ListaLivros.jsx`, se a lista filtrada estiver vazia, retorna diretamente o componente `<EstadoVazio />`.
+  - Em `ListaLivros.jsx`, se `!livros.length`, retorna imediatamente `<EstadoVazio filtro={filtro} termoBusca={termoBusca} />`.
 
 ---
 
@@ -116,8 +121,8 @@ Diferentes abordagens de renderização condicional foram implementadas no proje
 
 - **React 19**
 - **Vite 8**
-- **JavaScript (ES Modules)**
-- **CSS3 Moderno** (sem frameworks externos, variáveis CSS customizadas e design responsivo)
+- **JavaScript Moderno (ES Modules)**
+- **CSS3 Moderno** (sem frameworks externos, variáveis CSS e design totalmente responsivo)
 
 ---
 
@@ -129,6 +134,7 @@ Minha-estante-de-livros/
 │   └── favicon.svg
 ├── src/
 │   ├── components/
+│   │   ├── BarraBusca.jsx
 │   │   ├── CardLivro.jsx
 │   │   ├── EstadoCarregamento.jsx
 │   │   ├── EstadoVazio.jsx
@@ -145,6 +151,7 @@ Minha-estante-de-livros/
 ├── .gitignore
 ├── index.html
 ├── package.json
+├── vercel.json
 └── vite.config.js
 ```
 
@@ -153,66 +160,53 @@ Minha-estante-de-livros/
 ## 🚀 Como Executar Localmente
 
 ### Pré-requisitos
-- Node.js instalado (versão 18 ou superior recomendada).
+- Node.js (versão 18 ou superior).
 
 ### Passo a passo
-1. Clone este repositório ou baixe os arquivos do projeto.
-2. Acesse a pasta do projeto no terminal:
+1. Clone este repositório:
    ```bash
-   cd Minha-estante-de-livros-1
+   git clone https://github.com/jenifferCamar/Minha-estante-de-livros.git
+   cd Minha-estante-de-livros
    ```
-3. Instale as dependências:
+2. Instale as dependências:
    ```bash
    npm install
    ```
-4. Inicie o servidor de desenvolvimento:
+3. Inicie o servidor de desenvolvimento:
    ```bash
    npm run dev
    ```
-5. Abra o navegador no endereço indicado no terminal (normalmente [http://localhost:5173](http://localhost:5173)).
+4. Abra no navegador: [http://localhost:5173](http://localhost:5173).
 
 ---
 
-## 🐙 Passo a Passo: Criando o Repositório Público no GitHub
+## 🐙 Repositório Público no GitHub
 
-Para publicar esta aplicação em um repositório público no GitHub:
+O projeto está versionado com histórico de commits semânticos:
+- `feat`: inclusão de novas funcionalidades (componentes, estante, filtros, busca, formulário).
+- `style`: estilização completa com tema acolhedor de leitura.
+- `refactor`: modularização de componentes e otimização do fluxo de estado.
+- `ci/config`: configuração do `vercel.json` para deploy contínuo.
+- `docs`: documentação completa cobrindo todos os requisitos pedagógicos.
 
-1. Acesse o [GitHub](https://github.com) e entre na sua conta.
-2. Clique no botão **New** (ou no ícone `+` no topo direito > **New repository**).
-3. Preencha os campos:
-   - **Repository name**: `Minha-estante-de-livros` (ou o nome de sua preferência).
-   - **Description**: `Aplicação React para gerenciamento de livros explorando JSX, componentes, props, Virtual DOM, listas e renderização condicional.`
-   - **Visibility**: Selecione obrigatoriamente **Public** (Público).
-   - **Initialize this repository with**: Deixe todas as opções desmarcadas (não adicione README, .gitignore ou licença agora, pois o projeto já possui).
-4. Clique em **Create repository**.
-5. No seu terminal, na pasta do projeto, execute os comandos:
-   ```bash
-   # 1. Adicione os arquivos ao controle de versão
-   git add .
-
-   # 2. Faça o commit das alterações
-   git commit -m "feat: implementacao completa da estante de livros em React"
-
-   # 3. Garanta que a branch principal se chama main
-   git branch -M main
-
-   # 4. Conecte o repositório remoto (substitua SEU-USUARIO pelo seu username do GitHub)
-   git remote add origin https://github.com/SEU-USUARIO/Minha-estante-de-livros.git
-   # (Se a origin já existir, use: git remote set-url origin https://github.com/SEU-USUARIO/Minha-estante-de-livros.git)
-
-   # 5. Envie o código para o GitHub
-   git push -u origin main
-   ```
+Comandos para sincronizar com o GitHub:
+```bash
+git add .
+git commit -m "docs: atualizar documentacao no README"
+git push origin main
+```
 
 ---
 
 ## 🌐 Deploy na Vercel
 
-A aplicação está configurada para deploy automático:
+O projeto conta com o arquivo `vercel.json` pré-configurado para hospedagem na **Vercel**:
+
 1. Acesse [vercel.com](https://vercel.com) e conecte com sua conta GitHub.
 2. Clique em **Add New...** > **Project**.
-3. Importe o repositório público criado (`Minha-estante-de-livros`).
-4. A Vercel detecta automaticamente o **Vite**:
+3. Selecione o repositório **`Minha-estante-de-livros`**.
+4. A Vercel detectará automaticamente a configuração do Vite:
+   - **Framework Preset**: `Vite`
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
-5. Clique em **Deploy**. A aplicação estará online e com HTTPS configurado!
+5. Clique em **Deploy**. A cada novo `git push` na branch `main`, a Vercel publica a nova versão automaticamente!
