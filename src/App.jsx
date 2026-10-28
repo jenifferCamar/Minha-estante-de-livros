@@ -5,6 +5,7 @@ import ListaLivros from "./components/ListaLivros";
 import FormLivro from "./components/FormLivro";
 import Filtros from "./components/Filtros";
 import EstadoCarregamento from "./components/EstadoCarregamento";
+import "./App.css";
 
 function gerarId(lista) {
   return lista.length ? Math.max(...lista.map((l) => l.id)) + 1 : 1;
