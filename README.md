@@ -2,6 +2,8 @@
 
 Aplicação web desenvolvida com **React** e **Vite** para gerenciar uma estante pessoal de livros, exercitando na prática os principais fundamentos do ecossistema React: **JSX**, **Componentes**, **Props**, **Virtual DOM**, **Listas com chaves (`key`)** e **Renderização Condicional**.
 
+> 🚀 **Deploy em Produção (Vercel):** [https://minha-estante-de-livros.vercel.app](https://minha-estante-de-livros.vercel.app)
+
 ---
 
 ## 🎯 Sumário
@@ -182,17 +184,13 @@ Minha-estante-de-livros/
 
 ## 🐙 Repositório Público no GitHub
 
-O projeto está versionado com histórico de commits semânticos:
-- `feat`: inclusão de novas funcionalidades (componentes, estante, filtros, busca, formulário).
-- `style`: estilização completa com tema acolhedor de leitura.
-- `refactor`: modularização de componentes e otimização do fluxo de estado.
-- `ci/config`: configuração do `vercel.json` para deploy contínuo.
-- `docs`: documentação completa cobrindo todos os requisitos pedagógicos.
+O projeto está versionado com histórico de commits semânticos no repositório:
+🔗 **[https://github.com/jenifferCamar/Minha-estante-de-livros](https://github.com/jenifferCamar/Minha-estante-de-livros)**
 
-Comandos para sincronizar com o GitHub:
+Comandos para sincronizar novas alterações:
 ```bash
 git add .
-git commit -m "docs: atualizar documentacao no README"
+git commit -m "docs: atualizar documentacao"
 git push origin main
 ```
 
@@ -200,13 +198,8 @@ git push origin main
 
 ## 🌐 Deploy na Vercel
 
-O projeto conta com o arquivo `vercel.json` pré-configurado para hospedagem na **Vercel**:
+A aplicação está publicada e hospedada na **Vercel** com integração contínua (CI/CD):
 
-1. Acesse [vercel.com](https://vercel.com) e conecte com sua conta GitHub.
-2. Clique em **Add New...** > **Project**.
-3. Selecione o repositório **`Minha-estante-de-livros`**.
-4. A Vercel detectará automaticamente a configuração do Vite:
-   - **Framework Preset**: `Vite`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-5. Clique em **Deploy**. A cada novo `git push` na branch `main`, a Vercel publica a nova versão automaticamente!
+- **URL de Produção**: [https://minha-estante-de-livros.vercel.app](https://minha-estante-de-livros.vercel.app)
+- **Repositório Conectado**: `jenifferCamar/Minha-estante-de-livros`
+- **Build Automático**: a cada novo `git push` na branch `main`, a Vercel compila e publica a nova versão instantaneamente.

@@ -25,3 +25,4 @@ export default function BarraBusca({ termo, onBuscar, onLimpar }) {
     </div>
   );
 }
+
