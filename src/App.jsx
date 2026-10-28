@@ -7,12 +7,29 @@ import Filtros from "./components/Filtros";
 import EstadoCarregamento from "./components/EstadoCarregamento";
 import "./App.css";
 
+const CHAVE_STORAGE = "minha_estante_livros";
+
+function obterLivrosIniciais() {
+  try {
+    const dados = localStorage.getItem(CHAVE_STORAGE);
+    if (dados) {
+      const parsed = JSON.parse(dados);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn("Falha ao recuperar livros do localStorage:", err);
+  }
+  return LIVROS_INICIAIS;
+}
+
 function gerarId(lista) {
   return lista.length ? Math.max(...lista.map((l) => l.id)) + 1 : 1;
 }
 
 function App() {
-  const [livros, setLivros] = useState(LIVROS_INICIAIS);
+  const [livros, setLivros] = useState(obterLivrosIniciais);
   const [carregando, setCarregando] = useState(true);
   const [editando, setEditando] = useState(null);
   const [filtro, setFiltro] = useState("todos");
@@ -21,6 +38,14 @@ function App() {
     const timer = setTimeout(() => setCarregando(false), 800);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAVE_STORAGE, JSON.stringify(livros));
+    } catch (err) {
+      console.warn("Falha ao salvar livros no localStorage:", err);
+    }
+  }, [livros]);
 
   const adicionarLivro = (livro) => {
     const novo = { id: gerarId(livros), ...livro, concluido: false };
