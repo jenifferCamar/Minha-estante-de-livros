@@ -4,6 +4,7 @@ import Header from "./components/Header.jsx";
 import ListaLivros from "./components/ListaLivros";
 import FormLivro from "./components/FormLivro";
 import Filtros from "./components/Filtros";
+import BarraBusca from "./components/BarraBusca";
 import EstadoCarregamento from "./components/EstadoCarregamento";
 import "./App.css";
 
@@ -33,6 +34,7 @@ function App() {
   const [carregando, setCarregando] = useState(true);
   const [editando, setEditando] = useState(null);
   const [filtro, setFiltro] = useState("todos");
+  const [busca, setBusca] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => setCarregando(false), 800);
@@ -74,12 +76,22 @@ function App() {
     lendo: livros.filter((l) => !l.concluido).length,
     concluidos: livros.filter((l) => l.concluido).length,
   };
-  const livrosFiltrados =
-    filtro === "todos"
-      ? livros
-      : livros.filter((l) =>
-          filtro === "concluidos" ? l.concluido : !l.concluido
-        );
+
+  const livrosFiltrados = livros
+    .filter((l) => {
+      if (filtro === "concluidos") return l.concluido;
+      if (filtro === "lendo") return !l.concluido;
+      return true;
+    })
+    .filter((l) => {
+      if (!busca.trim()) return true;
+      const termo = busca.trim().toLowerCase();
+      return (
+        l.titulo.toLowerCase().includes(termo) ||
+        (l.autor && l.autor.toLowerCase().includes(termo)) ||
+        (l.genero && l.genero.toLowerCase().includes(termo))
+      );
+    });
 
   return (
     <>
@@ -92,7 +104,14 @@ function App() {
           onCancelarEdicao={cancelarEdicao}
         />
         <section className="estante">
-          <h2>Seus livros</h2>
+          <div className="estante__cabecalho">
+            <h2>Seus livros</h2>
+            <BarraBusca
+              termo={busca}
+              onBuscar={setBusca}
+              onLimpar={() => setBusca("")}
+            />
+          </div>
           <Filtros filtro={filtro} onFiltrar={setFiltro} contagem={contagem} />
           {carregando ? (
             <EstadoCarregamento />
@@ -100,6 +119,7 @@ function App() {
             <ListaLivros
               livros={livrosFiltrados}
               filtro={filtro}
+              termoBusca={busca}
               onAlternarStatus={alternarStatus}
               onEditar={iniciarEdicao}
               onExcluir={excluirLivro}

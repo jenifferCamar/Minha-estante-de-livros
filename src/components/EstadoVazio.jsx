@@ -1,9 +1,13 @@
-export default function EstadoVazio({ filtro }) {
+export default function EstadoVazio({ filtro, termoBusca }) {
   const mensagens = {
     todos: "Sua estante está vazia. Adicione seu primeiro livro!",
     lendo: "Nenhum livro em andamento. Que tal começar um?",
     concluidos: "Você ainda não concluiu nenhum livro.",
   };
+
+  const mensagem = termoBusca
+    ? `Nenhum livro encontrado para "${termoBusca}".`
+    : mensagens[filtro] ?? mensagens.todos;
 
   return (
     <div className="estado-vazio" aria-live="polite">
@@ -22,7 +26,7 @@ export default function EstadoVazio({ filtro }) {
           strokeWidth="1.5"
         />
       </svg>
-      <p>{mensagens[filtro] ?? mensagens.todos}</p>
+      <p>{mensagem}</p>
     </div>
   );
 }

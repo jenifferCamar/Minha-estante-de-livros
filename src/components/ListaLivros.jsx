@@ -4,12 +4,13 @@ import EstadoVazio from "./EstadoVazio";
 export default function ListaLivros({
   livros,
   filtro,
+  termoBusca,
   onAlternarStatus,
   onEditar,
   onExcluir,
 }) {
   if (!livros.length) {
-    return <EstadoVazio filtro={filtro} />;
+    return <EstadoVazio filtro={filtro} termoBusca={termoBusca} />;
   }
 
   return (
